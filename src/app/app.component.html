@@ -1,24 +1,32 @@
 <div *ngIf="initialized">
   <div *ngIf="isSignedIn; else signInButton">
-    <div>Hello {{userName}}</div>
+    <div>Hello {{ userName }}</div>
     <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-      <input type="text" nz-input [(ngModel)]="channelId" placeholder="Channel ID" [disabled]="isLoading" />
+      <input
+        type="text"
+        nz-input
+        [(ngModel)]="channelId"
+        placeholder="Channel ID"
+        [disabled]="isLoading"
+      />
     </nz-input-group>
     <ng-template #suffixIconButton>
-      <button nz-button nzType="primary" (click)="get()" [disabled]="isLoading">Get</button>
+      <button nz-button nzType="primary" (click)="get()" [disabled]="isLoading">
+        Get
+      </button>
     </ng-template>
 
-    <nz-table #basicTable [nzData]="items" [nzLoading]="isLoading">
-      <thead>
+    <nz-table #basicTable [nzData]="listOfDisplayData" [nzLoading]="isLoading">
+      <thead (nzSortChange)="sort($event)" nzSingleSort>
         <tr>
           <th></th>
           <th>Title</th>
-          <th>viewCount</th>
+          <th nzShowSort nzSortKey="statistics.viewCount">viewCount</th>
           <th>commentCount</th>
           <th>dislikeCount</th>
           <th>likeCount</th>
           <th>favoriteCount</th>
-          <th>publishedAt</th>
+          <th nzShowSort nzSortKey="snippet.publishedAt">publishedAt</th>
           <th>dimension</th>
           <th>definition</th>
           <th>privacyStatus</th>
@@ -27,13 +35,19 @@
       <tbody>
         <tr *ngFor="let item of basicTable.data">
           <td><img src="{{ item.snippet.thumbnails.default.url }}" /></td>
-          <td><a href="https://www.youtube.com/watch?v={{ item.id }}" target="_blank">{{ item.snippet.title }}</a></td>
+          <td>
+            <a
+              href="https://www.youtube.com/watch?v={{ item.id }}"
+              target="_blank"
+              >{{ item.snippet.title }}</a
+            >
+          </td>
           <td>{{ item.statistics.viewCount }}</td>
           <td>{{ item.statistics.commentCount }}</td>
           <td>{{ item.statistics.dislikeCount }}</td>
           <td>{{ item.statistics.likeCount }}</td>
           <td>{{ item.statistics.favoriteCount }}</td>
-          <td>{{ item.snippet.publishedAt }}</td>
+          <td>{{ item.snippet.publishedAt | date: "dd-MM-yyyy HH:mm:ss" }}</td>
           <td>{{ item.contentDetails.dimension }}</td>
           <td>{{ item.contentDetails.definition }}</td>
           <td>{{ item.status.privacyStatus }}</td>
